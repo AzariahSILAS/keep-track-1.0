@@ -1,97 +1,90 @@
-//---------hero section------------------------------
 const savings = document.getElementById('savings');
-const savingsInput = document.getElementById('savingsInput')
-
-
-
-
-
-//----------first div------------------------------
+const savingsInput = document.getElementById('savingsInput');
 const totalP = document.getElementById('totalP');
 const titalInput = document.getElementById('titalInput');
 const amountPaid = document.getElementById('amountPaid');
 const apInput = document.getElementById('apInput');
-
-
-
-
-//----------second div------------------------------
-
-
-
-
 const formField = document.querySelector('.formField');
 const totalCost = document.getElementById('totalCost');
 const leftToSpend = document.getElementById('leftToSpend');
 const editBtn = document.getElementById('editBtn');
-// const percentBar = getElementById('percent-bar');
-
-// ------------------variables end --------------------------
-
-//--------------------functions---------------------------
-
+const percentBar = document.getElementById('percent-bar');
 
 function editMode() {
-    //---------hero section------------------------------
-    savings.style.display = 'none';
-    savingsInput.style.display = 'inline-block';
-    //----------first div------------------------------
-    totalP.style.display = 'none';
-    amountPaid.style.display = 'none';
-    titalInput.style.display = 'inline-block';
-    apInput.style.display = 'inline-block';
-    //----------second div------------------------------
-    totalCost.style.display = 'none';
-    formField.style.display = 'inline-block';
-    //-------btn----------------
-    editBtn.textContent = 'Save';  
+  savings.style.display = 'none';
+  savingsInput.style.display = 'inline-block';
+  
+  totalP.style.display = 'none';
+  amountPaid.style.display = 'none';
+  titalInput.style.display = 'inline-block';
+  apInput.style.display = 'inline-block';
+
+  totalCost.style.display = 'none';
+  formField.style.display = 'inline-block';
+
+  editBtn.textContent = 'Save';
 }
-
-
 
 function viewMode() {
-    //---------hero section------------------------------
-    savingsInput.style.display = 'none';
-    savings.style.display = 'inline-block';
-    savings.textContent = savingsInput.value;
-    //----------first div------------------------------
-    totalP.textContent = titalInput.value;
-    amountPaid.textContent = apInput.value;
-    titalInput.style.display = 'none';
-    apInput.style.display = 'none';
-    totalP.style.display = 'inline-block';
-    amountPaid.style.display = 'inline-block';
-    //----------second div------------------------------
-    totalCost.textContent = formField.value;
-    totalCost.style.display = 'inline-block';
-    formField.style.display = 'none';
-    if(totalCost.textContent === ''){
-        totalCost.textContent = 'default'
-    }
-    //-------btn----------------
-    editBtn.textContent = 'Edit';
+  savingsInput.style.display = 'none';
+  savings.style.display = 'inline-block';
+  savings.textContent = '$' + parseFloat(savingsInput.value).toFixed(2);
+  
+  totalP.textContent = titalInput.value;
+  amountPaid.textContent = '$' + parseFloat(apInput.value).toFixed(2);
+  titalInput.style.display = 'none';
+  apInput.style.display = 'none';
+  totalP.style.display = 'inline-block';
+  amountPaid.style.display = 'inline-block';
+
+  totalCost.textContent = '$' + parseFloat(formField.value).toFixed(2);
+  totalCost.style.display = 'inline-block';
+  formField.style.display = 'none';
+
+  if (totalCost.textContent === '$') {
+    totalCost.textContent = '$0.00';
+  }
+
+  editBtn.textContent = 'Edit';
 }
-editMode()
 
-// function percentbar(){
-//     percentBar.style.width = amountPaid.value / totalCost.value;
-// }
-// percentbar()
+function updateLeftToSpend() {
+  const apValue = parseFloat(apInput.value) || 0;
+  const totalCostValue = parseFloat(totalCost.textContent.slice(1)) || 0;
+  const leftToSpendValue = parseFloat(savingsInput.value) - apValue;
+  leftToSpend.textContent = '$' + leftToSpendValue.toFixed(2);
+}
 
+function percentbar() {
+  const amountPaidValue = parseFloat(apInput.value) || 0;
+  const totalCostValue = parseFloat(totalCost.textContent.slice(1)) || 0;
+  const percentage = (amountPaidValue / totalCostValue) * 100;
+  percentBar.style.width = percentage + '%';
+}
+
+editMode();
 
 editBtn.addEventListener('click', function() {
-    if (editBtn.textContent === 'Edit') {
-          editMode();
-    } else {
-          viewMode();
-    }
-    if(apInput.value !== formField.value){
-        leftToSpend.textContent = savingsInput.value - apInput.value
-    } else{
-        leftToSpend.textContent = '0.00'
-    } 
-    
+  if (editBtn.textContent === 'Edit') {
+    editMode();
+  } else {
+    viewMode();
+  }
+
+  if (apInput.value !== formField.value) {
+    updateLeftToSpend();
+  } else {
+    leftToSpend.textContent = '$0.00';
+  }
+
+  percentbar();
 });
 
+apInput.addEventListener('input', function() {
+  if (editBtn.textContent === 'Save') {
+    updateLeftToSpend();
+    percentbar();
+  }
+});
 
 
